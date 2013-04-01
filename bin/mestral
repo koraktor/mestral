@@ -1,0 +1,35 @@
+#!/usr/bin/env ruby
+
+# This code is free software; you can redistribute it and/or modify it under
+# the terms of the new BSD License.
+#
+# Copyright (c) 2013, Sebastian Staudt
+
+ENV['MESTRAL_PATH'] = File.dirname File.dirname(__FILE__)
+ENV['MESTRAL_LIBRARY'] = File.join ENV['MESTRAL_PATH'], 'Library'
+
+# Ruby 1.8 doesn't provide RbConfig by default
+require 'rbconfig' unless defined? RbConfig
+
+# Discard RubyGems' `require` and restore Ruby's original
+if defined? gem_original_require
+  module Kernel
+    remove_method :require
+    alias_method :require, :gem_original_require
+  end
+end
+
+# Rebuild the default load path
+$LOAD_PATH.clear
+$LOAD_PATH << RbConfig::CONFIG['archdir']
+$LOAD_PATH << RbConfig::CONFIG['rubylibdir']
+
+# Add own and vendored gem paths to the load path
+$LOAD_PATH << File.join(ENV['MESTRAL_LIBRARY'], 'Mestral')
+Dir.glob(File.join(ENV['MESTRAL_LIBRARY'], 'Gems', '*', 'lib')) do |gem|
+  $LOAD_PATH << gem
+end
+
+require 'mestral/cli'
+
+Mestral::CLI.start ARGV

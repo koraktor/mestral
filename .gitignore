@@ -1,0 +1,5 @@
+# Ignore the hook tapes
+Library/Tapes/
+
+# Ignore dispensable files of vendored gems
+Library/Gems/thor-*/spec/
