@@ -5,16 +5,27 @@
 
 require 'fileutils'
 
+require 'mestral/errors'
+
 class Mestral::Tape
+
+  TAPES_PATH = File.join ENV['MESTRAL_LIBRARY'], 'Tapes'
 
   attr_reader :author
   attr_reader :license
   attr_reader :name
 
+  def self.all
+    tape_paths = Dir.glob File.join(TAPES_PATH, '*')
+    tapes = tape_paths.select { |path| File.directory? path }
+    tapes.map { |path| File.basename path }.map do |tape_name|
+      find tape_name
+    end
+  end
+
   def self.find(name)
     tape = new name
-    return nil unless tape.exists?
-    tape.init
+    raise Mestral::TapeNotFound, name unless tape.exists?
     tape
   end
 
@@ -54,12 +65,16 @@ class Mestral::Tape
     new_sha
   end
 
-  def init
-    true
+  def hooklet(name)
+    Mestral::Hooklet.find self, name
+  end
+
+  def hooklets
+    raise NotImplementedError
   end
 
   def path
-    File.join ENV['MESTRAL_LIBRARY'], 'Tapes', name
+    File.join TAPES_PATH, name
   end
 
   def sha

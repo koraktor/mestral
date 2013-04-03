@@ -14,3 +14,5 @@ end
 require 'mestral'
 
 include Mestral
+
+ENV['MESTRAL_LIBRARY'] = '/usr/local/Mestral/Library'

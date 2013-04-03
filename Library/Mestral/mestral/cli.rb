@@ -7,6 +7,7 @@ require 'thor'
 require 'uri'
 
 require 'mestral'
+require 'mestral/repository'
 require 'mestral/tape'
 
 class Mestral::CLI < Thor
@@ -40,13 +41,67 @@ class Mestral::CLI < Thor
     tape.init
   end
 
+  desc 'disable', 'Disable a hooklet for the given Git hook'
+  def disable(hook_name, tape_name, hooklet_name)
+    init_repository
+
+    hook = Mestral::Repository.current.hook hook_name
+
+    if hook.is_a? Mestral::Hook::Native
+      puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
+      return
+    end
+
+    unless hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
+      puts "The hooklet '#{hooklet_name}' (#{tape_name}) is not enabled for the '#{hook_name}' hook."
+      return
+    end
+
+    Mestral::Repository.current.git "config --unset-all mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
+  end
+
+  desc 'enable', 'Enable a hooklet for the given Git hook'
+  def enable(hook_name, tape_name, hooklet_name)
+    init_repository
+
+    hook = Mestral::Repository.current.hook hook_name
+
+    if hook.is_a? Mestral::Hook::Native
+      puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
+      return
+    end
+
+    if hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
+      puts "The hooklet '#{hooklet}' (#{tape_name}) was is already enabled for the '#{hook_name}' hook."
+      return
+    end
+
+    Mestral::Repository.current.git "config --add mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
+  end
+
+  desc 'execute-hook', 'Execute a hook'
+  def execute_hook(hook_path)
+    init_repository
+
+    hook_name = File.basename hook_path
+
+    debug "Executing #{hook_name}..."
+
+    hook = Mestral::Repository.current.hook hook_name
+    hook.execute
+  end
+
   desc 'list', 'List available hooks'
   option :enabled, :type => :boolean, :desc => 'Only list hooks currently enabled in the current repository'
   def list
     hooks = []
 
     if options[:enabled]
+      init_repository
+
+      hooks = Mestral::Repository.current.hooks
     else
+      hooks = Mestral::Tape.all.map(&:hooklets).flatten.compact
     end
 
     if hooks.empty?
@@ -60,7 +115,12 @@ class Mestral::CLI < Thor
       puts "List of #{'enabled ' if options[:enabled]}Git hooks"
 
       hooks.each do |hook|
-        puts hook.name
+        puts " - #{hook.name}"
+        if hook.is_a? Mestral::Hook::Multi
+          hook.hooklets.each do |hooklet|
+            puts "   - #{hooklet.name}"
+          end
+        end
       end
     end
   end
@@ -68,30 +128,26 @@ class Mestral::CLI < Thor
   desc 'update-tapes', 'Updates one or more hook tapes'
   def update_tapes(*tapes)
     if tapes.empty?
-      tape_paths = Dir.glob File.join(ENV['MESTRAL_LIBRARY'], 'Tapes', '*')
-      tapes = tape_paths.select { |path| File.directory? path }
-      tapes.map! { |path| File.basename path }
+      tapes = Mestral::Tape.all
+    else
+      tapes.map! do |tape_name|
+        tape = Mestral::Tape.find tape_name
+        puts "Tape '#{tape_name}' does not exist. Ignoring." if tape.nil?
+        tape
+      end
     end
 
-    tapes.each do |tape_name|
-      begin
-        tape = Mestral::Tape.find tape_name
-      rescue
-        puts "Tape '#{tape_name}' is not valid. Ignoring."
-        next
-      end
-      if tape.nil?
-        puts "Tape '#{tape_name}' does not exist. Ignoring."
-      else
-        update_tape tape
-      end
-    end
+    tapes.compact.each &method(:update_tape)
   end
 
   no_commands do
 
     def debug(message)
       puts message if options[:debug]
+    end
+
+    def init_repository
+      Mestral::Repository.current = Dir.pwd
     end
 
     def update_tape(tape)
