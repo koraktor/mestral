@@ -1,3 +1,5 @@
+coverage/
+
 # Ignore the hook tapes
 Library/Tapes/
 
