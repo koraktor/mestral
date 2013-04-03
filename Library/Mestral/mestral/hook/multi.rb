@@ -31,6 +31,7 @@ class Mestral::Hook::Multi < Mestral::Hook
       hooklet.execute
       break if hooklet.failed?
     end
+    @hooklets.all? &:passed?
   end
 
 end

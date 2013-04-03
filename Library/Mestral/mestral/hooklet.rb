@@ -40,4 +40,8 @@ class Mestral::Hooklet
     !@passed
   end
 
+  def passed?
+    @passed
+  end
+
 end

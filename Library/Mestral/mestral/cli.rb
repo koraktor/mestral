@@ -88,7 +88,7 @@ class Mestral::CLI < Thor
     debug "Executing #{hook_name}..."
 
     hook = Mestral::Repository.current.hook hook_name
-    hook.execute
+    exit(1) unless hook.execute
   end
 
   desc 'list', 'List available hooks'
