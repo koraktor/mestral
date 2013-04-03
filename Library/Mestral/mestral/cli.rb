@@ -37,8 +37,6 @@ class Mestral::CLI < Thor
         return
       end
     end
-
-    tape.init
   end
 
   desc 'disable', 'Disable a hooklet for the given Git hook'
