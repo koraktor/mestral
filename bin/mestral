@@ -5,7 +5,12 @@
 #
 # Copyright (c) 2013, Sebastian Staudt
 
-ENV['MESTRAL_PATH'] = File.dirname File.dirname(__FILE__)
+bin = __FILE__
+if File.lstat(bin).symlink?
+  bin = File.expand_path File.readlink(bin), File.dirname(bin)
+end
+
+ENV['MESTRAL_PATH'] = File.expand_path '..', File.dirname(bin)
 ENV['MESTRAL_LIBRARY'] = File.join ENV['MESTRAL_PATH'], 'Library'
 
 # Ruby 1.8 doesn't provide RbConfig by default
