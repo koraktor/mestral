@@ -11,8 +11,6 @@ class Mestral::Tape
 
   TAPES_PATH = File.join ENV['MESTRAL_LIBRARY'], 'Tapes'
 
-  attr_reader :author
-  attr_reader :license
   attr_reader :name
 
   def self.all
