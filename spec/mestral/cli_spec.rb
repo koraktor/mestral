@@ -9,6 +9,10 @@ require 'mestral/cli'
 
 describe CLI do
 
+  let :cli do
+    Mestral::CLI.new
+  end
+
   describe 'add-tape' do
     it 'should add a new tape'
     it 'should add a new tape with a given name'
@@ -38,11 +42,26 @@ describe CLI do
   end
 
   describe '#debug' do
-    it 'should output a debug message'
+    it 'should output a debug message if --debug was passed' do
+      cli.expects(:puts).with('test')
+      cli.options = { :debug => true }
+
+      cli.debug 'test'
+    end
+
+    it 'should output nothing if --debug was not passed' do
+      cli.expects(:puts).never
+
+      cli.debug 'test'
+    end
   end
 
   describe '#init_repository' do
-    it 'should initialize a Repository instance for the current working directory'
+    it 'should initialize a Repository instance for the current working directory' do
+      Repository.expects(:current=).with Dir.pwd
+
+      cli.init_repository
+    end
   end
 
   describe '#update_tape' do
