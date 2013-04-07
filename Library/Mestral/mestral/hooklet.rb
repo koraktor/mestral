@@ -29,7 +29,12 @@ class Mestral::Hooklet
   end
 
   def execute
-    instance_eval File.read(@path)
+    @passed = true
+    begin
+      instance_eval File.read(@path)
+    rescue Finished
+      @passed = $!.passed?
+    end
   end
 
   def exists?
@@ -42,6 +47,16 @@ class Mestral::Hooklet
 
   def passed?
     @passed
+  end
+
+  class Finished < StandardError
+    def initialize(successful)
+      @passed = successful
+    end
+
+    def passed?
+      @passed
+    end
   end
 
 end

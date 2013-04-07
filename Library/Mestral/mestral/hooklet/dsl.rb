@@ -6,7 +6,7 @@
 module Mestral::Hooklet::DSL
 
   def fail
-    @passed = false
+    raise Mestral::Hooklet::Finished, false
   end
 
   def git(command)
@@ -14,7 +14,7 @@ module Mestral::Hooklet::DSL
   end
 
   def pass
-    @passed = true
+    raise Mestral::Hooklet::Finished, true
   end
 
 end
