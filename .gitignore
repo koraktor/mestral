@@ -1,6 +1,7 @@
 .yardoc/
 coverage/
 doc/
+Gemfile.lock
 
 # Ignore the hook tapes
 Library/Tapes/
