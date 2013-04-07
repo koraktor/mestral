@@ -27,7 +27,27 @@ describe CLI do
   end
 
   describe 'execute-hook' do
-    it 'should execute the given Git hook in the current repository'
+    before do
+      @hook = mock
+      tape = mock
+      tape.expects(:hook).with('pre-commit').returns @hook
+      Repository.expects(:current).returns tape
+      cli.expects :init_repository
+    end
+
+    it 'should execute the given successful Git hook in the current repository' do
+      @hook.expects(:execute).returns true
+      cli.expects(:exit).never
+
+      cli.execute_hook '.git/hooks/pre-commit'
+    end
+
+    it 'should execute the given failing Git hook in the current repository' do
+      @hook.expects(:execute).returns false
+      cli.expects(:exit).with 1
+
+      cli.execute_hook '.git/hooks/pre-commit'
+    end
   end
 
   describe 'list' do
@@ -65,7 +85,25 @@ describe CLI do
   end
 
   describe '#update_tape' do
-    it 'should update the given tape'
+    before do
+      @tape = mock
+      @tape.expects(:name).returns 'name'
+      @tape.expects(:sha).returns '01234567'
+    end
+
+    it 'should update the given tape' do
+      @tape.expects(:git_pull).returns 'deadbeef'
+      cli.expects(:puts).with "Updated tape 'name' from 01234567 to deadbeef"
+
+      cli.update_tape @tape
+    end
+
+    it 'should print a message if the tape is already up-to-date' do
+      @tape.expects(:git_pull).returns '01234567'
+      cli.expects(:puts).with "Tape 'name' is already up-to-date."
+
+      cli.update_tape @tape
+    end
   end
 
 end
