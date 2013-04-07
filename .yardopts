@@ -1,0 +1,6 @@
+--title "Mestral API"
+Library/Mestral/mestral/**/*.rb
+-
+CHANGELOG.md
+README.md
+LICENSE

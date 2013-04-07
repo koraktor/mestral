@@ -1,4 +1,6 @@
+.yardoc/
 coverage/
+doc/
 
 # Ignore the hook tapes
 Library/Tapes/

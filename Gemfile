@@ -12,4 +12,5 @@ group :test do
   gem 'mocha', '~> 0.13.3'
   gem 'rspec-core', '~> 2.13.1'
   gem 'rspec-expectations', '~> 2.13.0'
+  gem 'yard', '~> 0.8.5'
 end

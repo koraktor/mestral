@@ -24,6 +24,7 @@ GEM
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
     thor (0.18.1)
+    yard (0.8.5.2)
 
 PLATFORMS
   ruby
@@ -34,3 +35,4 @@ DEPENDENCIES
   rspec-core (~> 2.13.1)
   rspec-expectations (~> 2.13.0)
   thor (~> 0.18.1)
+  yard (~> 0.8.5)
