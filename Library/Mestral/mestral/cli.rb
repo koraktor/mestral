@@ -12,7 +12,8 @@ require 'mestral/tape'
 
 class Mestral::CLI < Thor
 
-  class_option :debug, :type => :boolean
+  class_option :debug, :type => :boolean,
+    :desc => 'Prints additional debug information'
 
   desc 'add-tape', 'Add a hook tape'
   option :name, :desc => 'The name used to identify the tape'
