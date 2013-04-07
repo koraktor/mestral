@@ -92,8 +92,6 @@ class Mestral::CLI < Thor
   desc 'list', 'List available hooks'
   option :enabled, :type => :boolean, :desc => 'Only list hooks currently enabled in the current repository'
   def list
-    hooks = []
-
     if options[:enabled]
       init_repository
 
