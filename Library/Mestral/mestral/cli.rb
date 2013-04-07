@@ -136,6 +136,23 @@ class Mestral::CLI < Thor
     tapes.compact.each &method(:update_tape)
   end
 
+  desc 'upgrade', 'Upgrades the Mestral installation'
+  def upgrade
+    path = ENV['MESTRAL_PATH']
+    git_dir = File.join path, '.git'
+
+    `git --git-dir #{git_dir} fetch origin master 2>&1`
+    current_sha = `git --git-dir #{git_dir} log -1 --format=format:"%h" HEAD`
+    new_sha = `git --git-dir #{git_dir} log -1 --format=format:"%h" FETCH_HEAD`
+
+    if current_sha == new_sha
+      puts 'Mestral is already up-to-date.'
+    else
+      `git --git-dir #{git_dir} --work-tree #{path} reset --hard --quiet FETCH_HEAD`
+      puts "Updated Mestral from #{current_sha} to #{new_sha}"
+    end
+  end
+
   no_commands do
 
     def debug(message)
