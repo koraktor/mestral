@@ -14,7 +14,22 @@ describe Tape do
   end
 
   describe '.find' do
-    it 'should return the tape with the given name'
+    it 'should return the tape with the given name' do
+      tape = mock
+      tape.expects(:exists?).returns true
+      Tape.expects(:new).with('name').returns tape
+
+      Tape.find('name').should eq(tape)
+    end
+
+    it 'should raise an error if the given tape does not exist' do
+      tape = mock
+      tape.expects(:exists?).returns false
+      Tape.expects(:new).with('name').returns tape
+
+      lambda { Tape.find('name') }.
+        should raise_error(TapeNotFound, "The tape 'name' could not be found.")
+    end
   end
 
   describe '.new' do
@@ -34,11 +49,19 @@ describe Tape do
   end
 
   describe '#exists?' do
-    it 'should return whether this tape exists'
+    it 'should return whether this tape exists in the file system' do
+      File.expects(:exists?).with '/usr/local/Mestral/Library/Tapes/tape'
+
+      tape.exists?
+    end
   end
 
   describe '#git' do
-    it 'should execute a Git command in the context of the tape'
+    it 'should execute a Git command in the context of the tape' do
+      tape.expects(:`).with "git --git-dir #{tape.git_dir} command"
+
+      tape.git 'command'
+    end
   end
 
   describe '#git_clone' do
@@ -46,7 +69,9 @@ describe Tape do
   end
 
   describe '#git_dir' do
-    it 'should return the GIT_DIR of the Git repository'
+    it 'should return the GIT_DIR of the Git repository' do
+      tape.git_dir.should eq('/usr/local/Mestral/Library/Tapes/tape/.git')
+    end
   end
 
   describe '#git_pull' do

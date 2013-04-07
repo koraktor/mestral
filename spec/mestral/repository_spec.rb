@@ -10,11 +10,23 @@ require 'mestral/repository'
 describe Repository do
 
   describe '.current=' do
-    it 'sets the current repository to the given path'
+    it 'sets the current repository to the given path' do
+      repo = mock
+      Repository.expects(:new).with('/path/to/repository').returns repo
+
+      Repository.current = '/path/to/repository'
+
+      Repository.class_variable_get(:@@current).should eq(repo)
+    end
   end
 
   describe '.current' do
-    it 'should return the current repository'
+    it 'should return the current repository' do
+      repo = mock
+      Repository.class_variable_set :@@current, repo
+
+      Repository.current.should eq(repo)
+    end
   end
 
   describe '.new' do
