@@ -16,14 +16,14 @@ describe Repository do
 
       Repository.current = '/path/to/repository'
 
-      Repository.class_variable_get(:@@current).should eq(repo)
+      Repository.send(:class_variable_get, :@@current).should eq(repo)
     end
   end
 
   describe '.current' do
     it 'should return the current repository' do
       repo = mock
-      Repository.class_variable_set :@@current, repo
+      Repository.send :class_variable_set, :@@current, repo
 
       Repository.current.should eq(repo)
     end
