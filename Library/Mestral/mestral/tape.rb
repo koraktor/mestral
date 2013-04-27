@@ -15,8 +15,9 @@ class Mestral::Tape
 
   def self.all
     tape_paths = Dir.glob File.join(TAPES_PATH, '*')
-    tapes = tape_paths.select { |path| File.directory? path }
-    tapes.map { |path| File.basename path }.map do |tape_name|
+    tape_paths += Dir.glob File.join(TAPES_PATH, '*', '*')
+    tapes = tape_paths.select { |path| File.directory? File.join(path, '.git') }
+    tapes.map { |path| path.sub TAPES_PATH + '/', '' }.map do |tape_name|
       find tape_name
     end
   end
