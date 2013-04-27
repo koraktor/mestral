@@ -69,7 +69,9 @@ class Mestral::Tape
   end
 
   def hooklets
-    raise NotImplementedError
+    Dir.glob(File.join path, '*.rb').map do |file|
+      Mestral::Hooklet.find self, File.basename(file, '.rb')
+    end
   end
 
   def path
