@@ -18,7 +18,9 @@ class Mestral::CLI < Thor
   desc 'add-tape', 'Add a hook tape'
   option :name, :desc => 'The name used to identify the tape'
   def add_tape(url)
-    name = options[:name] || File.basename(url, '.git')
+    name = $1 if url =~ /(?:git|https?):\/\/github\.com\/(\w+\/\w+)(?:\.git)?$/
+    name ||= options[:name]
+    name ||= File.basename(url, '.git')
     tape = Mestral::Tape.new name
     if tape.exists?
       $stdout << "A tape with the name '#{tape.name}' already exists. Do you want to update it? [Y/n] "
