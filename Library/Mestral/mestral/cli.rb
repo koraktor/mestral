@@ -15,7 +15,7 @@ class Mestral::CLI < Thor
   class_option :debug, :type => :boolean,
     :desc => 'Prints additional debug information'
 
-  desc 'add-tape', 'Add a hook tape'
+  desc 'add-tape <url>', 'Add a hook tape'
   option :name, :desc => 'The name used to identify the tape'
   def add_tape(url)
     name = $1 if url =~ /(?:git|https?):\/\/github\.com\/(\w+\/\w+)(?:\.git)?$/
@@ -92,7 +92,7 @@ class Mestral::CLI < Thor
     Mestral::Repository.current.git "config --add mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
   end
 
-  desc 'execute-hook', 'Execute a hook'
+  desc 'execute-hook <path>', 'Execute a hook'
   def execute_hook(hook_path)
     init_repository
 
@@ -102,6 +102,11 @@ class Mestral::CLI < Thor
 
     hook = Mestral::Repository.current.hook hook_name
     exit(1) unless hook.execute
+  end
+
+  desc 'help [<command>]', 'Describe available commands or one specific command'
+  def help(*args)
+    super
   end
 
   desc 'list', 'List available hooks'
@@ -136,7 +141,7 @@ class Mestral::CLI < Thor
     end
   end
 
-  desc 'update-tapes', 'Updates one or more hook tapes'
+  desc 'update-tapes <tape>...', 'Updates one or more hook tapes'
   def update_tapes(*tapes)
     if tapes.empty?
       tapes = Mestral::Tape.all
