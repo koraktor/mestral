@@ -73,7 +73,7 @@ class Mestral::CLI < Thor
     end
 
     if hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
-      puts "The hooklet '#{hooklet}' (#{tape_name}) was is already enabled for the '#{hook_name}' hook."
+      puts "The hooklet '#{hooklet_name}' (#{tape_name}) is already enabled for the '#{hook_name}' hook."
       return
     end
 
