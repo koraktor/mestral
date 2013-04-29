@@ -21,7 +21,7 @@ class Mestral::Repository
   def initialize(path)
     @path = File.expand_path path
     Dir.chdir @path do
-      @git_dir = `git rev-parse --git-dir`.strip
+      @git_dir = File.expand_path `git rev-parse --git-dir`.strip, @path
     end
   end
 

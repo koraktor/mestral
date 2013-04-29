@@ -32,11 +32,25 @@ describe Repository do
   describe '.new' do
     it 'should create a new Repository instance for the given path' do
       Dir.expects(:chdir).with('/path/to/repository').yields
-      Kernel.stubs(:`).with('git rev-parse --git-dir').returns ".git\n"
 
-      repo = Repository.new '/path/to/repository'
+      repo = Repository.allocate
+      repo.stubs(:`).with('git rev-parse --git-dir').returns ".git\n"
+
+      repo.send :initialize, '/path/to/repository'
 
       repo.git_dir.should eq('/path/to/repository/.git')
+      repo.path.should eq('/path/to/repository')
+    end
+
+    it 'should create a new Repository instance for the given path with a different GIT_DIR' do
+      Dir.expects(:chdir).with('/path/to/repository').yields
+
+      repo = Repository.allocate
+      repo.stubs(:`).with('git rev-parse --git-dir').returns "/path/to/git_dir/.git\n"
+
+      repo.send :initialize, '/path/to/repository'
+
+      repo.git_dir.should eq('/path/to/git_dir/.git')
       repo.path.should eq('/path/to/repository')
     end
   end
