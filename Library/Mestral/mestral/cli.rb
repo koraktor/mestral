@@ -42,8 +42,8 @@ class Mestral::CLI < Thor
     end
   end
 
-  desc 'disable', 'Disable a hooklet for the given Git hook'
-  def disable(hook_name, tape_name, hooklet_name)
+  desc 'disable <hook> [<tape>] <hooklet>', 'Disable a hooklet for the given Git hook'
+  def disable(hook_name, tape_name, hooklet_name = nil)
     init_repository
 
     hook = Mestral::Repository.current.hook hook_name
@@ -51,6 +51,12 @@ class Mestral::CLI < Thor
     if hook.is_a? Mestral::Hook::Native
       puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
       return
+    end
+
+    tapes = Mestral::Tape.all
+    if tapes.size == 1 && hooklet_name.nil?
+      hooklet_name = tape_name
+      tape_name = tapes.first.name
     end
 
     unless hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
@@ -61,8 +67,8 @@ class Mestral::CLI < Thor
     Mestral::Repository.current.git "config --unset-all mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
   end
 
-  desc 'enable', 'Enable a hooklet for the given Git hook'
-  def enable(hook_name, tape_name, hooklet_name)
+  desc 'enable <hook> [<tape>] <hooklet>', 'Enable a hooklet for the given Git hook'
+  def enable(hook_name, tape_name, hooklet_name = nil)
     init_repository
 
     hook = Mestral::Repository.current.hook hook_name
@@ -70,6 +76,12 @@ class Mestral::CLI < Thor
     if hook.is_a? Mestral::Hook::Native
       puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
       return
+    end
+
+    tapes = Mestral::Tape.all
+    if tapes.size == 1 && hooklet_name.nil?
+      hooklet_name = tape_name
+      tape_name = tapes.first.name
     end
 
     if hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
