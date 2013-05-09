@@ -70,18 +70,16 @@ if target_path.nil?
   end
 end
 
-%w{git-hooks mestral}.each do |executable|
-  executable = File.join target_path, executable
-  if windows?
-    puts "Installing the Mestral executable wrapper into '#{executable}'..."
-    File.open executable, 'w' do |file|
-      file << "#!/usr/bin/env ruby\n"
-      file << "load '#{MESTRAL_PREFIX}/bin/mestral'\n"
-    end
-  else
-    puts "Symlinking the Mestral executable into '#{executable}'..."
-    `ln -s #{MESTRAL_PREFIX}/bin/mestral #{executable}`
+executable = File.join target_path, 'mestral'
+if windows?
+  puts "Installing the Mestral executable wrapper into '#{executable}'..."
+  File.open executable, 'w' do |file|
+    file << "#!/usr/bin/env ruby\n"
+    file << "load '#{MESTRAL_PREFIX}/bin/mestral'\n"
   end
+else
+  puts "Symlinking the Mestral executable into '#{executable}'..."
+  `ln -s #{MESTRAL_PREFIX}/bin/mestral #{executable}`
 end
 
 done
