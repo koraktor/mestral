@@ -5,6 +5,11 @@ Mestral
 
 A hook manager for Git
 
+## About
+
+Mestral allows to easily manage your Git hooks. Combine so called *hooklets* to
+form the hooks fitting your needs.
+
 ## Installation
 
 Mestral can be installed via a simple installation script:
@@ -24,7 +29,32 @@ You can also clone the Git repository and symlink the executable into your
 ```sh
 $ git clone http://github.com/koraktor/mestral.git
 $ ln -s mestral/bin/mestral /usr/local/bin/mestral
+```
+
+Additionally, you might want to add it as a command to Git, for example:
+
+```sh
 $ ln -s mestral/bin/mestral /usr/local/bin/git-hooks
+```
+
+## Getting started
+
+Initially, you should add a hook repository, also known as a *tape*.
+
+```sh
+$ mestral add-tape https://github.com/mestral/tape
+```
+
+After that, list the available *hooklets*…
+
+```sh
+$ mestral list
+```
+
+… and enable those you like for the current Git repository:
+
+```sh
+$ mestral enable pre-commit check-whitespace
 ```
 
 ## License
