@@ -10,11 +10,19 @@ module Mestral::Hooklet::DSL
   end
 
   def git(command)
-    `git --git-dir #{Mestral::Repository.current.git_dir} #{command}`
+    `git --git-dir #{repo.git_dir} #{command}`
+  end
+
+  def config
+    repo.config['%s:%s' % [tape.name, name]]
   end
 
   def pass
     raise Mestral::Hooklet::Finished, true
+  end
+
+  def repo
+    Mestral::Repository.current
   end
 
 end
