@@ -18,9 +18,11 @@ class Mestral::Hook::Multi < Mestral::Hook
     super
 
     @hooklets = []
-    (repo.config['hooks'] || []).each do |tape, hooklets|
-      tape = Mestral::Tape.find tape
-      Hash[hooklets].each do |hooklet, hook|
+    (repo.config['hooks'] || []).each do |hook, hooklets|
+      next unless hook == name
+      hooklets = [hooklets] unless hooklets.first.is_a? Array
+      hooklets.each do |tape, hooklet|
+        tape = Mestral::Tape.find tape
         @hooklets << tape.hooklet(hooklet) if hook == name
       end
     end

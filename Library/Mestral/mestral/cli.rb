@@ -64,7 +64,7 @@ class Mestral::CLI < Thor
       return
     end
 
-    Mestral::Repository.current.git "config --unset-all mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
+    Mestral::Repository.current.git "config --unset-all mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
   end
 
   desc 'enable <hook> [<tape>] <hooklet>', 'Enable a hooklet for the given Git hook'
@@ -89,7 +89,7 @@ class Mestral::CLI < Thor
       return
     end
 
-    Mestral::Repository.current.git "config --add mestral.hooks.#{tape_name}.#{hooklet_name} #{hook_name}"
+    Mestral::Repository.current.git "config --add mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
   end
 
   desc 'execute-hook <path>', 'Execute a hook'

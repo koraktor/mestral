@@ -30,11 +30,13 @@ class Mestral::Repository
 
     @config = {}
     git('config --null --get-regexp "^mestral"').split("\0").
-      map { |value| value.sub(/^mestral\./, '').split "\n" }.each do |kv|
+      map { |value| value.sub(/^mestral\./, '').split "\n" }.each do |key, value|
       config = @config
-      keys = kv[0].split('.')
-      keys[0..-2].each { |key| config = config[key] ||= {} }
-      config[keys.last] = kv[1]
+      keys = key.split('.')
+      key = keys.pop
+      keys.each { |k| config = config[k] ||= {} }
+      value = value.split(':') if value.include? ':'
+      config[key] = config.key?(key) ? [config[key], value] : value
     end
     @config
   end
