@@ -79,7 +79,7 @@ class Mestral::Tape
   end
 
   def sha
-    @sha ||= `git --git-dir #{git_dir} rev-parse --short HEAD`
+    @sha ||= git 'rev-parse --short HEAD'
   end
 
 end
