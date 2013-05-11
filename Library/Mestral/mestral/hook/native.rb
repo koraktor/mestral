@@ -9,7 +9,7 @@ class Mestral::Hook::Native < Mestral::Hook
 
   def execute
     `#{path}`
-    $!.success?
+    $?.success?
   end
 
 end
