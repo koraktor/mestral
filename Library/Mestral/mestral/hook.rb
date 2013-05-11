@@ -39,4 +39,8 @@ class Mestral::Hook
     @repo = repo
   end
 
+  def path
+    File.join repo.git_dir, 'hooks', name
+  end
+
 end

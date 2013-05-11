@@ -21,4 +21,8 @@ describe Hook do
     it 'should return a new Repository instance'
   end
 
+  describe '#path' do
+    it 'should return the path of the hook file'
+  end
+
 end
