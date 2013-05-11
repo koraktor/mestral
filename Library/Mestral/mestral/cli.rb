@@ -44,20 +44,10 @@ class Mestral::CLI < Thor
 
   desc 'disable <hook> [<tape>] <hooklet>', 'Disable a hooklet for the given Git hook'
   def disable(hook_name, tape_name, hooklet_name = nil)
-    init_repository
+    hook = find_hook hook_name
+    return if hook.nil?
 
-    hook = Mestral::Repository.current.hook hook_name
-
-    if hook.is_a? Mestral::Hook::Native
-      puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
-      return
-    end
-
-    tapes = Mestral::Tape.all
-    if tapes.size == 1 && hooklet_name.nil?
-      hooklet_name = tape_name
-      tape_name = tapes.first.name
-    end
+    tape_name, hooklet_name = find_hooklet tape_name, hooklet_name
 
     unless hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
       puts "The hooklet '#{hooklet_name}' (#{tape_name}) is not enabled for the '#{hook_name}' hook."
@@ -69,20 +59,10 @@ class Mestral::CLI < Thor
 
   desc 'enable <hook> [<tape>] <hooklet>', 'Enable a hooklet for the given Git hook'
   def enable(hook_name, tape_name, hooklet_name = nil)
-    init_repository
+    hook = find_hook hook_name
+    return if hook.nil?
 
-    hook = Mestral::Repository.current.hook hook_name
-
-    if hook.is_a? Mestral::Hook::Native
-      puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
-      return
-    end
-
-    tapes = Mestral::Tape.all
-    if tapes.size == 1 && hooklet_name.nil?
-      hooklet_name = tape_name
-      tape_name = tapes.first.name
-    end
+    tape_name, hooklet_name = find_hooklet tape_name, hooklet_name
 
     if hook.hooklets.any? { |hooklet| hooklet.tape.name == tape_name && hooklet.name == hooklet_name }
       puts "The hooklet '#{hooklet_name}' (#{tape_name}) is already enabled for the '#{hook_name}' hook."
@@ -177,6 +157,28 @@ class Mestral::CLI < Thor
 
     def debug(message)
       puts message if options[:debug]
+    end
+
+    def find_hook(hook_name)
+      init_repository
+      hook = Mestral::Repository.current.hook hook_name
+
+      if hook.is_a? Mestral::Hook::Native
+        puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
+        return
+      end
+
+      hook
+    end
+
+    def find_hooklet(tape_name, hooklet_name = nil)
+      tapes = Mestral::Tape.all
+      if tapes.size == 1 && hooklet_name.nil?
+        hooklet_name = tape_name
+        tape_name = tapes.first.name
+      end
+
+      [ tape_name, hooklet_name ]
     end
 
     def init_repository
