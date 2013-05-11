@@ -64,11 +64,11 @@ describe CLI do
   describe 'upgrade' do
     before do
       cli.expects(:`).with 'git --git-dir /usr/local/Mestral/.git fetch origin master 2>&1'
-      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git log -1 --format=format:"%h" HEAD').returns '01234567'
+      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git rev-parse --short HEAD').returns '01234567'
     end
 
     it 'should update the given tape' do
-      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git log -1 --format=format:"%h" FETCH_HEAD').returns 'deadbeef'
+      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git rev-parse --short FETCH_HEAD').returns 'deadbeef'
       cli.expects(:`).with 'git --git-dir /usr/local/Mestral/.git --work-tree /usr/local/Mestral reset --hard --quiet FETCH_HEAD'
       cli.expects(:puts).with 'Updated Mestral from 01234567 to deadbeef'
 
@@ -76,7 +76,7 @@ describe CLI do
     end
 
     it 'should print a message if the tape is already up-to-date' do
-      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git log -1 --format=format:"%h" FETCH_HEAD').returns '01234567'
+      cli.expects(:`).with('git --git-dir /usr/local/Mestral/.git rev-parse --short FETCH_HEAD').returns '01234567'
       cli.expects(:puts).with 'Mestral is already up-to-date.'
 
       cli.upgrade

@@ -142,8 +142,8 @@ class Mestral::CLI < Thor
     git_dir = File.join path, '.git'
 
     `git --git-dir #{git_dir} fetch origin master 2>&1`
-    current_sha = `git --git-dir #{git_dir} log -1 --format=format:"%h" HEAD`
-    new_sha = `git --git-dir #{git_dir} log -1 --format=format:"%h" FETCH_HEAD`
+    current_sha = `git --git-dir #{git_dir} rev-parse --short HEAD`
+    new_sha = `git --git-dir #{git_dir} rev-parse --short FETCH_HEAD`
 
     if current_sha == new_sha
       puts 'Mestral is already up-to-date.'

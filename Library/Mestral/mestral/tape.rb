@@ -55,7 +55,7 @@ class Mestral::Tape
 
   def git_pull
     git 'fetch --force --quiet origin master'
-    new_sha = git ' log -1 --format=format:"%h" FETCH_HEAD'
+    new_sha = git ' rev-parse --short FETCH_HEAD'
     if new_sha != sha
       git "--work-tree #{path} reset --hard --quiet FETCH_HEAD"
       @sha = new_sha
@@ -79,7 +79,7 @@ class Mestral::Tape
   end
 
   def sha
-    @sha ||= `git --git-dir #{git_dir} log -1 --format=format:"%h" HEAD`
+    @sha ||= `git --git-dir #{git_dir} rev-parse --short HEAD`
   end
 
 end
