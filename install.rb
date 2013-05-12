@@ -55,7 +55,7 @@ else
 end
 
 puts "Cloning the Mestral repository to '#{MESTRAL_PREFIX}'"
-`git clone #{MESTRAL_REPOSITORY} #{MESTRAL_PREFIX}`
+`git clone --recurse-submodules #{MESTRAL_REPOSITORY} #{MESTRAL_PREFIX}`
 
 target_path = ENV['PATH'].split(File::PATH_SEPARATOR).
   select { |path| File.stat(path).writable? }.
