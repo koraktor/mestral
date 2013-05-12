@@ -36,11 +36,6 @@ def windows?
   RbConfig::CONFIG['host_os']  =~ /mingw|mswin32|cygwin/
 end
 
-if executable? 'brew'
-  puts "#{Font.yellow}Homebrew is installed. Please install using `brew install mestral`.#{Font.reset}"
-  exit
-end
-
 unless executable? 'git'
   puts "#{Font.red}Git's executable is not in your PATH. Please add it.#{Font.reset}"
   exit
