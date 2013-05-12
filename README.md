@@ -15,7 +15,7 @@ form the hooks fitting your needs.
 Mestral can be installed via a simple installation script:
 
 ```sh
-$ ruby -e "$(curl -fLsS https://raw.github.com/koraktor/mestral/install)"
+$ ruby -e "$(curl -fLsS https://raw.github.com/mestral/mestral/install/install.rb)"
 ```
 
 On Unix-like system, this will install Mestral into `/usr/local/mestral`. On
@@ -27,7 +27,7 @@ You can also clone the Git repository and symlink the executable into your
 `$PATH`. For example:
 
 ```sh
-$ git clone http://github.com/koraktor/mestral.git
+$ git clone http://github.com/mestral/mestral.git
 $ ln -s mestral/bin/mestral /usr/local/bin/mestral
 ```
 
