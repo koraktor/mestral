@@ -1,0 +1,3 @@
+[submodule "Library/Gems/thor"]
+	path = Library/Gems/thor
+	url = git://github.com/wycats/thor.git
