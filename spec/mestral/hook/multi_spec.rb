@@ -15,7 +15,7 @@ describe Hook::Multi do
     it 'should create a new Multi instance'
   end
 
-  describe '#execute' do
+  describe '#run' do
     it 'should execute the hooklets associated with this hook'
   end
 

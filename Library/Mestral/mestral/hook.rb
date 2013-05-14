@@ -20,6 +20,10 @@ class Mestral::Hook
     HOOK_NAMES.map { |hook| find repo, hook }.compact
   end
 
+  def self.current
+    @@current
+  end
+
   def self.find(repo, name)
     hook_path = File.join repo.hooks_dir, name
     return nil unless File.executable? hook_path
@@ -37,6 +41,13 @@ class Mestral::Hook
   def initialize(repo, name)
     @name = name
     @repo = repo
+  end
+
+  def execute
+    @@current = self
+    passed = run
+    @@current = nil
+    passed
   end
 
   def path

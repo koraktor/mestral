@@ -13,12 +13,20 @@ describe Hook do
     it 'should return all hooks from the given repository'
   end
 
+  describe '.current' do
+    it 'should return the currently executed hook'
+  end
+
   describe '.find' do
     it 'should return the names hook from the given repository'
   end
 
   describe '.new' do
     it 'should return a new Repository instance'
+  end
+
+  describe '#execute' do
+    it 'should set the current hook and execute it'
   end
 
   describe '#path' do

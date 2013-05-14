@@ -16,7 +16,7 @@ describe Hook::Native do
     Hook::Native.new repo, 'pre-commit'
   end
 
-  describe '#execute' do
+  describe '#run' do
     it 'should execute the native Git hook and return if it was successful' do
       native.expects(:`).with File.join hooks_dir, 'pre-commit'
       system ''

@@ -7,7 +7,7 @@ require 'mestral/hook'
 
 class Mestral::Hook::Native < Mestral::Hook
 
-  def execute
+  def run
     `#{path}`
     $?.success?
   end

@@ -17,6 +17,10 @@ module Mestral::Hooklet::DSL
     repo.config['%s:%s' % [tape.name, name]]
   end
 
+  def current
+    Mestral::Hook.current
+  end
+
   def pass
     raise Mestral::Hooklet::Finished, true
   end

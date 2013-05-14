@@ -28,7 +28,7 @@ class Mestral::Hook::Multi < Mestral::Hook
     end
   end
 
-  def execute
+  def run
     @hooklets.each do |hooklet|
       hooklet.execute
       break if hooklet.failed?
