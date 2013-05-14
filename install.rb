@@ -41,7 +41,7 @@ unless executable? 'git'
   exit
 end
 
-MESTRAL_REPOSITORY = ENV["MESTRAL_REPOSITORY"] || 'https://github.com/mestral/mestral'
+MESTRAL_REPOSITORY = ENV['MESTRAL_REPOSITORY'] || 'https://github.com/mestral/mestral'
 
 if windows?
   MESTRAL_PREFIX = "#{ENV['ALLUSERSPROFILE']}/Mestral"
