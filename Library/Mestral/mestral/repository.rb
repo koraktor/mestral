@@ -35,10 +35,28 @@ class Mestral::Repository
       keys = key.split('.')
       key = keys.pop
       keys.each { |k| config = config[k] ||= {} }
-      value = value.split(':') if value.include? ':'
-      config[key] = config.key?(key) ? [config[key], value] : value
+      if config.key? key
+        if config[key].is_a? Array
+          config[key] << value
+        else
+          config[key] = [ config[key], value ]
+        end
+      else
+        config[key] = value
+      end
     end
-    @config
+
+    split_values = lambda do |value|
+      if value.is_a? Hash
+        Hash[value.map { |key, val| [ key, split_values.call(val) ]}]
+      elsif value.is_a? Array
+        value.map! { |val| split_values.call(val) }
+      else
+        value.include?(':') ? value.split(':') : value
+      end
+    end
+
+    @config = split_values.call @config
   end
 
   def git(command)
