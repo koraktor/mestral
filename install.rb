@@ -53,7 +53,7 @@ puts "Cloning the Mestral repository to '#{MESTRAL_PREFIX}'"
 `git clone --recurse-submodules #{MESTRAL_REPOSITORY} #{MESTRAL_PREFIX}`
 
 target_path = ENV['PATH'].split(File::PATH_SEPARATOR).
-  select { |path| File.stat(path).writable? }.
+  select { |path| File.directory?(path) && File.stat(path).writable? }.
   sort_by { |path| path.length }.first
 
 if target_path.nil?
