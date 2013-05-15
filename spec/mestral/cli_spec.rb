@@ -29,10 +29,9 @@ describe CLI do
   describe 'execute-hook' do
     before do
       @hook = mock
-      tape = mock
-      tape.expects(:hook).with('pre-commit').returns @hook
-      Repository.expects(:current).returns tape
-      cli.expects :init_repository
+      repo = mock
+      repo.expects(:hook).with('pre-commit').returns @hook
+      cli.expects(:repository).returns repo
     end
 
     it 'should execute the given successful Git hook in the current repository' do
@@ -99,10 +98,21 @@ describe CLI do
   end
 
   describe '#init_repository' do
-    it 'should initialize a Repository instance for the current working directory' do
-      Repository.expects(:current=).with Dir.pwd
+    it 'should initialize a Repository instance for the current working directory if it does not exist' do
+      repo = mock
+      Repository.expects(:current=).with do |dir|
+        Repository.send :class_variable_set, :@@current, repo
+        dir == Dir.pwd
+      end
 
-      cli.init_repository
+      cli.repository.should eq(repo)
+    end
+
+    it 'should return an existing Repository instance' do
+      repo = mock
+      Repository.send :class_variable_set, :@@current, repo
+
+      cli.repository.should eq(repo)
     end
   end
 
