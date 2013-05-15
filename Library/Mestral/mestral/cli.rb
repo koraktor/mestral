@@ -12,6 +12,8 @@ require 'mestral/tape'
 
 class Mestral::CLI < Thor
 
+  include Thor::Actions
+
   class_option :debug, :type => :boolean,
     :desc => 'Prints additional debug information'
 
@@ -23,21 +25,19 @@ class Mestral::CLI < Thor
     name ||= File.basename(url, '.git')
     tape = Mestral::Tape.new name
     if tape.exists?
-      $stdout << "A tape with the name '#{tape.name}' already exists. Do you want to update it? [Y/n] "
-      if $stdin.gets.strip.downcase != 'y'
+      if yes? "A tape with the name '#{tape.name}' already exists. Do you want to update it? [Y/n]"
         update_tape tape
       else
         puts 'Aborted.'
-        return
       end
     else
       url = File.expand_path url if URI(url).scheme.nil?
       if tape.git_clone url
         puts "Successfully cloned tape '#{tape.name}'."
       else
-        $stdout << 'Cloning the tape failed. Do you still want to keep it? [y/N] '
-        tape.destroy if $stdin.gets.strip.downcase != 'y'
-        return
+        if no? 'Cloning the tape failed. Do you still want to keep it? [y/N] '
+          tape.destroy
+        end
       end
     end
   end
