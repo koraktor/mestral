@@ -1,7 +1,10 @@
 Mestral
 =======
 
-[![Build Status](https://travis-ci.org/mestral/mestral.png?branch=master)](https://travis-ci.org/mestral/mestral) [![Coverage Status](https://coveralls.io/repos/mestral/mestral/badge.png?branch=master)](https://coveralls.io/r/mestral/mestral) [![Dependency Status](https://gemnasium.com/mestral/mestral.png)](https://gemnasium.com/mestral/mestral)
+[![Build Status](https://travis-ci.org/mestral/mestral.png?branch=master)](https://travis-ci.org/mestral/mestral)
+[![Coverage Status](https://coveralls.io/repos/mestral/mestral/badge.png?branch=master)](https://coveralls.io/r/mestral/mestral)
+[![Code Climate](https://codeclimate.com/github/mestral/mestral.png)](https://codeclimate.com/github/mestral/mestral)
+[![Dependency Status](https://gemnasium.com/mestral/mestral.png)](https://gemnasium.com/mestral/mestral)
 
 A hook manager for Git
 
