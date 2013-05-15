@@ -54,7 +54,7 @@ class Mestral::CLI < Thor
       return
     end
 
-    Mestral::Repository.current.git "config --unset-all mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
+    repository.git "config --unset-all mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
   end
 
   desc 'enable <hook> [<tape>] <hooklet>', 'Enable a hooklet for the given Git hook'
@@ -69,19 +69,16 @@ class Mestral::CLI < Thor
       return
     end
 
-    Mestral::Repository.current.git "config --add mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
+    repository.git "config --add mestral.hooks.#{hook_name} #{tape_name}:#{hooklet_name}"
   end
 
   desc 'execute-hook <path>', 'Execute a hook'
   def execute_hook(hook_path)
-    init_repository
-
     hook_name = File.basename hook_path
 
     debug "Executing #{hook_name}..."
 
-    hook = Mestral::Repository.current.hook hook_name
-    exit(1) unless hook.execute
+    exit(1) unless repository.hook(hook_name).execute
   end
 
   desc 'help [<command>]', 'Describe available commands or one specific command'
@@ -93,9 +90,7 @@ class Mestral::CLI < Thor
   option :enabled, :type => :boolean, :desc => 'Only list hooks currently enabled in the current repository'
   def list
     if options[:enabled]
-      init_repository
-
-      hooks = Mestral::Repository.current.hooks
+      hooks = repository.hooks
     else
       hooks = Mestral::Tape.all.map(&:hooklets).flatten.compact
     end
@@ -160,8 +155,7 @@ class Mestral::CLI < Thor
     end
 
     def find_hook(hook_name)
-      init_repository
-      hook = Mestral::Repository.current.hook hook_name
+      hook = repository.hook hook_name
 
       if hook.is_a? Mestral::Hook::Native
         puts "The '#{hook_name}' hook is a native hook and cannot execute hooklets."
@@ -181,8 +175,9 @@ class Mestral::CLI < Thor
       [ tape_name, hooklet_name ]
     end
 
-    def init_repository
-      Mestral::Repository.current = Dir.pwd
+    def repository
+      Mestral::Repository.current = Dir.pwd if Mestral::Repository.current.nil?
+      Mestral::Repository.current
     end
 
     def update_tape(tape)

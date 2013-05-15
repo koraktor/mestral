@@ -7,6 +7,8 @@ require 'mestral/hook'
 
 class Mestral::Repository
 
+  @@current = nil
+
   def self.current=(path)
     @@current = new path
   end
