@@ -7,13 +7,14 @@ class Mestral::Hooklet; end
 
 require 'mestral/errors'
 require 'mestral/hooklet/dsl'
+require 'mestral/hooklet/native'
+require 'mestral/hooklet/ruby'
 
 class Mestral::Hooklet
 
-  include DSL
-
   def self.find(tape, name)
-    hooklet = new tape, name
+    hooklet = Ruby.new tape, name
+    hooklet = Native.new tape, name unless hooklet.exists?
     raise Mestral::HookletNotFound.new(tape, name) unless hooklet.exists?
     hooklet
   end
@@ -24,17 +25,7 @@ class Mestral::Hooklet
 
   def initialize(tape, name)
     @name = name
-    @path = "#{File.join(tape.path, name)}.rb"
     @tape = tape
-  end
-
-  def execute
-    @passed = true
-    begin
-      instance_eval File.read(@path)
-    rescue Finished
-      @passed = $!.passed?
-    end
   end
 
   def exists?
