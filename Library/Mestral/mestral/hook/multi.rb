@@ -9,7 +9,9 @@ require 'mestral/hooklet'
 class Mestral::Hook::Multi < Mestral::Hook
 
   def self.install(repo, name)
-    File.write File.join(repo.hooks_dir, name), '#!/usr/bin/env mestral'
+    path = File.join(repo.hooks_dir, name)
+    File.write path, '#!/usr/bin/env mestral'
+    File.chmod 0755, path
   end
 
   attr_reader :hooklets
