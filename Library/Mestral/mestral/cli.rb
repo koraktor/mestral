@@ -169,6 +169,13 @@ class Mestral::CLI < Thor
         return
       end
 
+      if hook.nil?
+        if yes? "The Git hook '#{hook_name}' is not enabled. Do you want to create it now? [Y/n]"
+          Mestral::Hook::Multi.install repository, hook_name
+          hook = repository.hook hook_name
+        end
+      end
+
       hook
     end
 
