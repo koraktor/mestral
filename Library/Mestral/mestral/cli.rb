@@ -78,7 +78,14 @@ class Mestral::CLI < Thor
 
     debug "Executing #{hook_name}..."
 
-    exit(1) unless repository.hook(hook_name).execute
+    hook = repository.hook hook_name
+
+    if hook.nil?
+      puts "The Git hook '#{hook_name}' is not enabled."
+      return
+    end
+
+    exit(1) unless hook.execute
   end
 
   desc 'help [<command>]', 'Describe available commands or one specific command'
