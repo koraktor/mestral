@@ -10,7 +10,9 @@ class Mestral::Hook::Multi < Mestral::Hook
 
   def self.install(repo, name)
     path = File.join(repo.hooks_dir, name)
-    File.write path, '#!/usr/bin/env mestral'
+    hook = File.open path, 'w'
+    hook.puts '#!/usr/bin/env mestral'
+    hook.close
     File.chmod 0755, path
   end
 
