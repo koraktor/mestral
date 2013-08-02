@@ -60,6 +60,12 @@ $ mestral list
 $ mestral enable pre-commit check-whitespace
 ```
 
+Additionally, you can execute a Git hook manually:
+
+```sh
+$ mestral execute pre-commit
+```
+
 ## License
 
 This code is free software; you can redistribute it and/or modify it under the
