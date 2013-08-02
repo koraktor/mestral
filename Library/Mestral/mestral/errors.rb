@@ -11,6 +11,12 @@ module Mestral
     end
   end
 
+  class InvalidHook < StandardError
+    def initialize(name)
+      super "'#{name}' is not a valid Git hook."
+    end
+  end
+
   class TapeNotFound < StandardError
     def initialize(name)
       super "The tape '#{name}' could not be found."

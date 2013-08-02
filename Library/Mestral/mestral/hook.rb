@@ -5,6 +5,7 @@
 
 class Mestral::Hook; end
 
+require 'mestral/errors'
 require 'mestral/hook/multi'
 require 'mestral/hook/native'
 
@@ -25,6 +26,8 @@ class Mestral::Hook
   end
 
   def self.find(repo, name)
+    raise Mestral::InvalidHook, name unless HOOK_NAMES.include? name
+
     hook_path = File.join repo.hooks_dir, name
     return nil unless File.executable? hook_path
 
